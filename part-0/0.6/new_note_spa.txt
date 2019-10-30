@@ -1,0 +1,23 @@
+title New Note SPA
+
+note over browser:
+User types a note on input and clicks on Save button
+end note
+
+note over browser:
+browser executes the form submit event handler
+that updates the list of notes
+that renders notes to display
+end note
+
+browser->server: HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note_spa | Request Payload: {"content":"aha!","date":"2019-10-30T13:03:54.270Z"}
+
+note over server:
+Note is successfully created on the database
+end note
+
+server->browser: Response 201 Created
+
+note over browser:
+browser console.log the response
+end note
