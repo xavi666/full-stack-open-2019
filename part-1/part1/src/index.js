@@ -3,18 +3,20 @@ import ReactDom from 'react-dom';
 
 const App = () => {
   const course = 'Half Stack application development';
-  const part1 = 'Fundamentals of React';
-  const exercises1 = 10;
-  const part2 = 'Using props to pass data';
-  const exercises2 = 7;
-  const part3 = 'State of a component';
-  const exercises3 = 14;
+  const part1 = {
+    name: 'Fundamentals of React',
+    exercises: 10
+  }
+  const part2 = {
+    name: 'Using props to pass data',
+    exercises: 7
+  }
+  const part3 = {
+    name: 'State of a component',
+    exercises: 14
+  }
 
-  const data = [
-    {part: part1, exercises: exercises1},
-    {part: part2, exercises: exercises2},
-    {part: part3, exercises: exercises3}
-  ];
+  const data = [part1, part2, part3];
 
   return (
     <div>
@@ -30,10 +32,10 @@ const Header = (props) => {
 }
 
 const Content = (props) => {
-  return props.data.map(item => {
+  return props.data.map(part => {
     return (
-      <div key={item.part}>
-        <Part item={item}/>
+      <div key={part.name}>
+        <Part part={part}/>
       </div>
     );
   });
@@ -41,8 +43,8 @@ const Content = (props) => {
 
 const Part = (props) => {
   return (
-    <p key={props.item.part}>
-      {props.item.part} {props.item.exercises}
+    <p key={props.part.name}>
+      {props.part.name} {props.part.exercises}
     </p>
   );
 }
