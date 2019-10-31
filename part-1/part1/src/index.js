@@ -32,11 +32,19 @@ const Header = (props) => {
 const Content = (props) => {
   return props.data.map(item => {
     return (
-      <p key={item.part}>
-        {item.part} {item.exercises}
-      </p>
+      <div key={item.part}>
+        <Part item={item}/>
+      </div>
     );
   });
+}
+
+const Part = (props) => {
+  return (
+    <p key={props.item.part}>
+      {props.item.part} {props.item.exercises}
+    </p>
+  );
 }
 
 const Total = (props) => {
