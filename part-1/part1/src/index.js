@@ -2,27 +2,27 @@ import React from 'react';
 import ReactDom from 'react-dom';
 
 const App = () => {
-  const course = 'Half Stack application development';
-  const part1 = {
-    name: 'Fundamentals of React',
-    exercises: 10
-  }
-  const part2 = {
-    name: 'Using props to pass data',
-    exercises: 7
-  }
-  const part3 = {
-    name: 'State of a component',
-    exercises: 14
-  }
-
-  const data = [part1, part2, part3];
+  const course = 'Half Stack application development'
+  const parts = [
+    {
+      name: 'Fundamentals of React',
+      exercises: 10
+    },
+    {
+      name: 'Using props to pass data',
+      exercises: 7
+    },
+    {
+      name: 'State of a component',
+      exercises: 14
+    }
+  ]
 
   return (
     <div>
       <Header course={course} />
-      <Content data={data} />
-      <Total data={data} />
+      <Content parts={parts} />
+      <Total parts={parts} />
     </div>
   );
 }
@@ -32,7 +32,7 @@ const Header = (props) => {
 }
 
 const Content = (props) => {
-  return props.data.map(part => {
+  return props.parts.map(part => {
     return (
       <div key={part.name}>
         <Part part={part}/>
@@ -50,7 +50,7 @@ const Part = (props) => {
 }
 
 const Total = (props) => {
-  const sum = props.data
+  const sum = props.parts
     .map(item => item.exercises)
     .reduce((sum, item) => {return sum + item });
 
