@@ -8,6 +8,10 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault();
+    if (persons.map(person => person.name).includes(newName)) {
+      window.alert(`${newName} is already added to the phonebook`);
+      return;
+    }
     const newPerson = {name: newName};
     setPersons(persons.concat(newPerson));
     setNewName('');
@@ -42,6 +46,6 @@ const App = () => {
       {renderPersons()}
     </div>
   );
-}
-;
+};
+
 export default App;
