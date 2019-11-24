@@ -2,8 +2,7 @@ import React from 'react';
 
 const Total = ({ parts }) => {
   const sum = parts
-    .map(item => item.exercises)
-    .reduce((sum, item) => {return sum + item });
+    .reduce((sum, item) => { return sum + item.exercises }, 0);
 
   return (
     <p>
