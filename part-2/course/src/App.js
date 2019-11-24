@@ -1,5 +1,17 @@
 import React from 'react';
 
+const Total = ({ parts }) => {
+  const sum = parts
+    .map(item => item.exercises)
+    .reduce((sum, item) => {return sum + item });
+
+  return (
+    <p>
+      <strong>total of {sum} exercises</strong>
+    </p>
+  );
+}; 
+
 const Part = ({ part }) => {
   return (
     <div>{part.name} {part.exercises}</div>
@@ -21,6 +33,7 @@ const Course = ({ course }) => {
     <div>
       <Header name={course.name}/>
       <Content parts={course.parts}/>
+      <Total parts={course.parts}/> 
     </div>
   );
 };
@@ -43,6 +56,11 @@ const App = () => {
         name: 'State of a component',
         exercises: 14,
         id: 3
+      },
+      {
+        name: 'Redux',
+        exercises: 11,
+        id: 4
       }
     ]
   }
