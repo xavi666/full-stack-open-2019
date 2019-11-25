@@ -12,14 +12,22 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault();
-    if (persons.map(person => person.name).includes(newName)) {
-      window.alert(`${newName} is already added to the phonebook`);
-      return;
-    }
+    const existingPerson = persons.find(p => newName === p.name);
     const newPerson = {
       name: newName, 
       number: newNumber
     };
+    if (existingPerson) {
+      window.confirm(`${newName} is already added to the phonebook, replace old number with a new one`);
+      personService
+        .update(existingPerson.id, newPerson)
+        .then(response => {
+          setPersons(persons.map(p => p.id !== existingPerson.id ? p : response.data))
+          setNewName('');
+          setNewNumber('');
+        });
+      return;
+    }
     personService
       .create(newPerson)
       .then(response => {
