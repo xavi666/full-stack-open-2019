@@ -6,10 +6,16 @@ import Countries from './components/Countries';
 const App = () => {
   const [countries, setCountries] = useState([]);
   const [filter, setFilter] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState(null);
 
   const handleFilter = (event) => {
+    setSelectedCountry(null);
     setFilter(event.target.value);
   };
+
+  const selectCountry = (country) => {
+    setSelectedCountry(country);
+  }
 
   const filterByName = countries.filter(country => {
     return country.name.toLowerCase().includes(filter.toLowerCase())
@@ -32,6 +38,8 @@ const App = () => {
       <Countries 
         countries={filterByName} 
         filter={filter}
+        selectedCountry={selectedCountry}
+        selectCountry={selectCountry}
       />
     </div>
   );
