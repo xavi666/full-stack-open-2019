@@ -2,19 +2,22 @@ import React, { useState, useEffect } from 'react';
 import Filter from './components/Filter';
 import PersonForm from './components/PersonForm';
 import Persons from './components/Persons';
+import Notification from './components/Notification';
 import personService from './services/persons';
+import './index.css'
 
 const App = () => {
   const [persons, setPersons] = useState([]);
-  const [ newName, setNewName ] = useState('');
-  const [ newNumber, setNewNumber ] = useState('');
-  const [ filter, setFilter ] = useState('');
+  const [newName, setNewName] = useState('');
+  const [newNumber, setNewNumber] = useState('');
+  const [filter, setFilter] = useState('');
+  const [message, setMessage] = useState(null);
 
   const addPerson = (event) => {
     event.preventDefault();
     const existingPerson = persons.find(p => newName === p.name);
     const newPerson = {
-      name: newName, 
+      name: newName,
       number: newNumber
     };
     if (existingPerson) {
@@ -22,6 +25,12 @@ const App = () => {
       personService
         .update(existingPerson.id, newPerson)
         .then(response => {
+          setMessage(
+            `Updated ${existingPerson.name}`
+          )
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
           setPersons(persons.map(p => p.id !== existingPerson.id ? p : response.data))
           setNewName('');
           setNewNumber('');
@@ -31,10 +40,16 @@ const App = () => {
     personService
       .create(newPerson)
       .then(response => {
+        setMessage(
+          `Added ${newPerson.name}`
+        )
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
         setPersons(persons.concat(response.data));
         setNewName('');
         setNewNumber('');
-      })  
+      })
   };
 
   const deletePerson = (person) => {
@@ -69,12 +84,13 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Filter 
+      <Notification message={message} />
+      <Filter
         filter={filter}
         handleFilter={handleFilter}
       />
       <h2>add a new</h2>
-      <PersonForm 
+      <PersonForm
         addPerson={addPerson}
         newName={newName}
         handleNameChange={handleNameChange}
@@ -82,8 +98,8 @@ const App = () => {
         handleNumberChange={handleNumberChange}
       />
       <h2>Numbers</h2>
-      <Persons 
-        persons={persons} 
+      <Persons
+        persons={persons}
         filter={filter}
         deletePerson={deletePerson}
       />
