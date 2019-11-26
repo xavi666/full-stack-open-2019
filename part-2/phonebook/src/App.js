@@ -11,7 +11,7 @@ const App = () => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [filter, setFilter] = useState('');
-  const [message, setMessage] = useState(null);
+  const [message, setMessage] = useState({});
 
   const addPerson = (event) => {
     event.preventDefault();
@@ -25,12 +25,13 @@ const App = () => {
       personService
         .update(existingPerson.id, newPerson)
         .then(response => {
-          setMessage(
-            `Updated ${existingPerson.name}`
-          )
+          setMessage({
+            type: 'success',
+            text: `Updated ${newPerson.name}`
+          });
           setTimeout(() => {
-            setMessage(null)
-          }, 5000)
+            setMessage({});
+          }, 5000);
           setPersons(persons.map(p => p.id !== existingPerson.id ? p : response.data))
           setNewName('');
           setNewNumber('');
@@ -40,12 +41,13 @@ const App = () => {
     personService
       .create(newPerson)
       .then(response => {
-        setMessage(
-          `Added ${newPerson.name}`
-        )
+        setMessage({
+          type: 'success',
+          text: `Added ${newPerson.name}`
+        });
         setTimeout(() => {
-          setMessage(null)
-        }, 5000)
+          setMessage({});
+        }, 5000);
         setPersons(persons.concat(response.data));
         setNewName('');
         setNewNumber('');
@@ -56,8 +58,24 @@ const App = () => {
     window.confirm(`Delete ${person.name} ?`);
     personService.deletePerson(person.id)
       .then(response => {
-        const newPersons = persons.filter(p => p.id !== person.id);
-        setPersons(newPersons);
+        setMessage({
+          type: 'success',
+          text: `${person.name} deleted`
+        });
+        setTimeout(() => {
+          setMessage({});
+        }, 5000);
+        setPersons(persons.filter(p => p.id !== person.id));
+      })
+      .catch(error => {
+        setMessage({
+          type: 'error',
+          text: `Intormation of ${person.name} has already been removed from server`
+        });
+        setTimeout(() => {
+          setMessage({})
+        }, 5000)
+        setPersons(persons.filter(p => p.id !== person.id))
       });
   }
 
