@@ -21,62 +21,67 @@ const App = () => {
       number: newNumber
     };
     if (existingPerson) {
-      window.confirm(`${newName} is already added to the phonebook, replace old number with a new one`);
+      const confirm = window.confirm(`${newName} is already added to the phonebook, replace old number with a new one?`);
+      if (confirm) {
+        personService
+          .update(existingPerson.id, newPerson)
+          .then(response => {
+            setMessage({
+              type: 'success',
+              text: `Updated ${newPerson.name}`
+            });
+            setTimeout(() => {
+              setMessage({});
+            }, 5000);
+            setPersons(persons.map(p => p.id !== existingPerson.id ? p : response.data))
+            setNewName('');
+            setNewNumber('');
+          });
+        return;
+      }
+    } else {
       personService
-        .update(existingPerson.id, newPerson)
+        .create(newPerson)
         .then(response => {
           setMessage({
             type: 'success',
-            text: `Updated ${newPerson.name}`
+            text: `Added ${newPerson.name}`
           });
           setTimeout(() => {
             setMessage({});
           }, 5000);
-          setPersons(persons.map(p => p.id !== existingPerson.id ? p : response.data))
+          setPersons(persons.concat(response.data));
           setNewName('');
           setNewNumber('');
         });
-      return;
     }
-    personService
-      .create(newPerson)
-      .then(response => {
-        setMessage({
-          type: 'success',
-          text: `Added ${newPerson.name}`
-        });
-        setTimeout(() => {
-          setMessage({});
-        }, 5000);
-        setPersons(persons.concat(response.data));
-        setNewName('');
-        setNewNumber('');
-      })
   };
 
   const deletePerson = (person) => {
-    window.confirm(`Delete ${person.name} ?`);
-    personService.deletePerson(person.id)
-      .then(response => {
-        setMessage({
-          type: 'success',
-          text: `${person.name} deleted`
+    const confirm = window.confirm(`Delete ${person.name} ?`);
+    if (confirm) {
+      personService.deletePerson(person.id)
+        .then(response => {
+          setMessage({
+            type: 'success',
+            text: `${person.name} deleted`
+          });
+          setTimeout(() => {
+            setMessage({});
+          }, 5000);
+          setPersons(persons.filter(p => p.id !== person.id));
+        })
+        .catch(error => {
+          setMessage({
+            type: 'error',
+            text: `Information of ${person.name} has already been removed from server`
+          });
+          setTimeout(() => {
+            setMessage({})
+          }, 5000)
+          setPersons(persons.filter(p => p.id !== person.id))
         });
-        setTimeout(() => {
-          setMessage({});
-        }, 5000);
-        setPersons(persons.filter(p => p.id !== person.id));
-      })
-      .catch(error => {
-        setMessage({
-          type: 'error',
-          text: `Intormation of ${person.name} has already been removed from server`
-        });
-        setTimeout(() => {
-          setMessage({})
-        }, 5000)
-        setPersons(persons.filter(p => p.id !== person.id))
-      });
+    }
   }
 
   const handleNameChange = (event) => {
