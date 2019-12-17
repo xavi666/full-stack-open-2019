@@ -21,21 +21,22 @@ const App = () => {
       number: newNumber
     };
     if (existingPerson) {
-      window.confirm(`${newName} is already added to the phonebook, replace old number with a new one`);
-      personService
-        .update(existingPerson.id, newPerson)
-        .then(response => {
-          setMessage({
-            type: 'success',
-            text: `Updated ${newPerson.name}`
+      if(window.confirm(`${newName} is already added to the phonebook, replace old number with a new one`)){
+        personService
+          .update(existingPerson.id, newPerson)
+          .then(response => {
+            setMessage({
+              type: 'success',
+              text: `Updated ${newPerson.name}`
+            });
+            setTimeout(() => {
+              setMessage({});
+            }, 5000);
+            setPersons(persons.map(p => p.id !== existingPerson.id ? p : response.data))
+            setNewName('');
+            setNewNumber('');
           });
-          setTimeout(() => {
-            setMessage({});
-          }, 5000);
-          setPersons(persons.map(p => p.id !== existingPerson.id ? p : response.data))
-          setNewName('');
-          setNewNumber('');
-        });
+      }
       return;
     }
     personService
@@ -55,28 +56,29 @@ const App = () => {
   };
 
   const deletePerson = (person) => {
-    window.confirm(`Delete ${person.name} ?`);
-    personService.deletePerson(person.id)
-      .then(response => {
-        setMessage({
-          type: 'success',
-          text: `${person.name} deleted`
+    if(window.confirm(`Delete ${person.name} ?`)){
+      personService.deletePerson(person.id)
+        .then(response => {
+          setMessage({
+            type: 'success',
+            text: `${person.name} deleted`
+          });
+          setTimeout(() => {
+            setMessage({});
+          }, 5000);
+          setPersons(persons.filter(p => p.id !== person.id));
+        })
+        .catch(error => {
+          setMessage({
+            type: 'error',
+            text: `Intormation of ${person.name} has already been removed from server`
+          });
+          setTimeout(() => {
+            setMessage({})
+          }, 5000)
+          setPersons(persons.filter(p => p.id !== person.id))
         });
-        setTimeout(() => {
-          setMessage({});
-        }, 5000);
-        setPersons(persons.filter(p => p.id !== person.id));
-      })
-      .catch(error => {
-        setMessage({
-          type: 'error',
-          text: `Intormation of ${person.name} has already been removed from server`
-        });
-        setTimeout(() => {
-          setMessage({})
-        }, 5000)
-        setPersons(persons.filter(p => p.id !== person.id))
-      });
+    }
   }
 
   const handleNameChange = (event) => {
