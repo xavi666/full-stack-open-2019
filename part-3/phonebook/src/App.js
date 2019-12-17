@@ -35,6 +35,13 @@ const App = () => {
             setPersons(persons.map(p => p.id !== existingPerson.id ? p : response.data))
             setNewName('');
             setNewNumber('');
+          })
+          .catch(error => {
+            setMessage({
+              type: 'error',
+              text: error.response.data.error
+            });
+            console.log(error.response.data);
           });
       }
       return;
@@ -53,6 +60,13 @@ const App = () => {
         setNewName('');
         setNewNumber('');
       })
+      .catch(error => {
+        setMessage({
+          type: 'error',
+          text: error.response.data.error
+        });
+        console.log(error.response.data);
+      });
   };
 
   const deletePerson = (person) => {
