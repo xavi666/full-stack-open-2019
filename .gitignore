@@ -2,3 +2,6 @@
 
 # api_keys
 /part-2/countries/src/api_keys
+/part-4/blog-list/.env
+/part-4/blog-list/node_modules
+\.DS_Store
