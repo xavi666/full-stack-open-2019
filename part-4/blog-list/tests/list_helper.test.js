@@ -38,3 +38,17 @@ describe('favoriteBlog', () => {
     });
   });
 });
+
+describe('mostBlogs', () => {
+  test('when list is empty equals empty object', () => {
+    const result = listHelper.mostBlogs([]);
+    expect(result).toEqual({});
+  });
+  test('when list has multiple blogs equals the author with more blogs', () => {
+    const result = listHelper.mostBlogs(blogData);
+    expect(result).toEqual({
+      author: "Robert C. Martin",
+      blogs: 3
+    });
+  });
+});
