@@ -25,6 +25,7 @@ describe('total likes', () => {
     delete blogData[0].likes; // equals to 7
     const result = listHelper.totalLikes(blogData);
     expect(result).toBe(29);
+    blogData[0].likes = 7; // add the value back
   });
 })
 
@@ -49,6 +50,20 @@ describe('mostBlogs', () => {
     expect(result).toEqual({
       author: "Robert C. Martin",
       blogs: 3
+    });
+  });
+});
+
+describe('mostLikes', () => {
+  test('when list is empty equals empty object', () => {
+    const result = listHelper.mostLikes([]);
+    expect(result).toEqual({});
+  });
+  test('when list has multiple blogs equals the author with more likes', () => {
+    const result = listHelper.mostLikes(blogData);
+    expect(result).toEqual({
+      author: "Edsger W. Dijkstra",
+      likes: 17
     });
   });
 });
