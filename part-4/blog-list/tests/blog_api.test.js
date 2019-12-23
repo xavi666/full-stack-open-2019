@@ -14,7 +14,7 @@ beforeEach(async () => {
   }
 })
 
-describe('when there is initially some notes saved', () => {
+describe('when there is initially some blogs saved', () => {
   test('blogs are returned as json', async () => {
     await api
       .get('/api/blogs')
@@ -33,6 +33,30 @@ describe('when there is initially some notes saved', () => {
 
     expect(response.body[0].id).toBeDefined();
   })
+
+  test('a valid blog can be added ', async () => {
+    const newBlog = {
+      title: 'ACB.com',
+      author: 'Don Patricio',
+      url: 'www.acb.com',
+      likes: 4
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd.length).toBe(helper.initialBlogs.length + 1)
+    const titles = blogsAtEnd.map(b => b.title)
+
+    expect(titles).toContain('ACB.com')
+  })
+
+
 
 })
 
