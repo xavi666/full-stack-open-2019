@@ -56,6 +56,25 @@ describe('when there is initially some blogs saved', () => {
     expect(titles).toContain('ACB.com')
   })
 
+  test('a blog with missing likes property is defaulted to 0', async () => {
+    const newBlog = {
+      title: 'ACB.com',
+      author: 'Don Patricio',
+      url: 'www.acb.com'
+    }
+
+    const savedBlog = await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd.length).toBe(helper.initialBlogs.length + 1)
+    expect(blogsAtEnd[blogsAtEnd.length-1].likes).toBeDefined()
+    expect(blogsAtEnd[blogsAtEnd.length-1].likes).toBe(0)
+  })
+
 
 
 })
