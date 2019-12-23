@@ -63,7 +63,7 @@ describe('when there is initially some blogs saved', () => {
       url: 'www.acb.com'
     }
 
-    const savedBlog = await api
+    await api
       .post('/api/blogs')
       .send(newBlog)
       .expect(201)
@@ -75,7 +75,20 @@ describe('when there is initially some blogs saved', () => {
     expect(blogsAtEnd[blogsAtEnd.length-1].likes).toBe(0)
   })
 
+  test('a blog with missing title and url returns a 400 error', async () => {
+    const newBlog = {
+      author: 'Don Patricio',
+      likes: 4
+    }
 
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd.length).toBe(helper.initialBlogs.length)
+  })
 
 })
 
