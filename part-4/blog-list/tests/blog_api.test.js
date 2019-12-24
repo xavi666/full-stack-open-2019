@@ -34,81 +34,109 @@ describe('when there is initially some blogs saved', () => {
     expect(response.body[0].id).toBeDefined();
   })
 
-  test('a valid blog can be added ', async () => {
-    const newBlog = {
-      title: 'ACB.com',
-      author: 'Don Patricio',
-      url: 'www.acb.com',
-      likes: 4
-    }
+  describe('addition of a new blog', () => {
+    test('succeeds with valid data ', async () => {
+      const newBlog = {
+        title: 'ACB.com',
+        author: 'Don Patricio',
+        url: 'www.acb.com',
+        likes: 4
+      }
 
-    await api
-      .post('/api/blogs')
-      .send(newBlog)
-      .expect(201)
-      .expect('Content-Type', /application\/json/)
+      await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
 
 
-    const blogsAtEnd = await helper.blogsInDb()
-    expect(blogsAtEnd.length).toBe(helper.initialBlogs.length + 1)
-    const titles = blogsAtEnd.map(b => b.title)
+      const blogsAtEnd = await helper.blogsInDb()
+      expect(blogsAtEnd.length).toBe(helper.initialBlogs.length + 1)
+      const titles = blogsAtEnd.map(b => b.title)
 
-    expect(titles).toContain('ACB.com')
+      expect(titles).toContain('ACB.com')
+    })
+
+    test('when missing likes property is defaulted to 0', async () => {
+      const newBlog = {
+        title: 'ACB.com',
+        author: 'Don Patricio',
+        url: 'www.acb.com'
+      }
+
+      await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+      const blogsAtEnd = await helper.blogsInDb()
+      expect(blogsAtEnd.length).toBe(helper.initialBlogs.length + 1)
+      expect(blogsAtEnd[blogsAtEnd.length-1].likes).toBeDefined()
+      expect(blogsAtEnd[blogsAtEnd.length-1].likes).toBe(0)
+    })
+
+    test('when missing title and url returns a 400 error', async () => {
+      const newBlog = {
+        author: 'Don Patricio',
+        likes: 4
+      }
+
+      await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(400)
+        .expect('Content-Type', /application\/json/)
+      const blogsAtEnd = await helper.blogsInDb()
+      expect(blogsAtEnd.length).toBe(helper.initialBlogs.length)
+    })
   })
 
-  test('a blog with missing likes property is defaulted to 0', async () => {
-    const newBlog = {
-      title: 'ACB.com',
-      author: 'Don Patricio',
-      url: 'www.acb.com'
-    }
+  describe('deletion of a blog', () => {
+    test('succeeds with status code 204 if id is valid', async () => {
+      const blogsAtStart = await helper.blogsInDb()
+      const blogToDelete = blogsAtStart[0]
 
-    await api
-      .post('/api/blogs')
-      .send(newBlog)
-      .expect(201)
-      .expect('Content-Type', /application\/json/)
+      await api
+        .delete(`/api/blogs/${blogToDelete.id}`)
+        .expect(204)
 
-    const blogsAtEnd = await helper.blogsInDb()
-    expect(blogsAtEnd.length).toBe(helper.initialBlogs.length + 1)
-    expect(blogsAtEnd[blogsAtEnd.length-1].likes).toBeDefined()
-    expect(blogsAtEnd[blogsAtEnd.length-1].likes).toBe(0)
+      const blogsAtEnd = await helper.blogsInDb()
+
+      expect(blogsAtEnd.length).toBe(
+        helper.initialBlogs.length - 1
+      )
+
+      const titles = blogsAtEnd.map(r => r.title)
+
+      expect(titles).not.toContain(blogToDelete.title)
+    })
   })
 
-  test('a blog with missing title and url returns a 400 error', async () => {
-    const newBlog = {
-      author: 'Don Patricio',
-      likes: 4
-    }
+  describe('updating a blog', () => {
+    test('succeeds with status code 204 if id is valid', async () => {
+      const blogsAtStart = await helper.blogsInDb()
+      const blogToUpdate = blogsAtStart[0]
 
-    await api
-      .post('/api/blogs')
-      .send(newBlog)
-      .expect(400)
-      .expect('Content-Type', /application\/json/)
-    const blogsAtEnd = await helper.blogsInDb()
-    expect(blogsAtEnd.length).toBe(helper.initialBlogs.length)
+      blogToUpdate.title = 'Updated Title'
+      blogToUpdate.url = 'www.updated-url.com'
+      blogToUpdate.author = 'Updated Author'
+      blogToUpdate.likes = 5
+
+      await api
+        .put(`/api/blogs/${blogToUpdate.id}`)
+        .send(blogToUpdate)
+        .expect(200)
+
+      const blogsAtEnd = await helper.blogsInDb()
+
+      expect(blogsAtEnd.length).toBe(blogsAtStart.length)
+      expect(blogsAtStart[0].title).toBe('Updated Title')
+      expect(blogsAtStart[0].url).toBe('www.updated-url.com')
+      expect(blogsAtStart[0].author).toBe('Updated Author')
+      expect(blogsAtStart[0].likes).toBe(5)
+    })
   })
-
-  test('deletion of a blog succeeds with status code 204 if id is valid', async () => {
-    const blogsAtStart = await helper.blogsInDb()
-    const blogToDelete = blogsAtStart[0]
-
-    await api
-      .delete(`/api/blogs/${blogToDelete.id}`)
-      .expect(204)
-
-    const blogsAtEnd = await helper.blogsInDb()
-
-    expect(blogsAtEnd.length).toBe(
-      helper.initialBlogs.length - 1
-    )
-
-    const titles = blogsAtEnd.map(r => r.title)
-
-    expect(titles).not.toContain(blogToDelete.title)
-  })
-
 })
 
 afterAll(() => {
