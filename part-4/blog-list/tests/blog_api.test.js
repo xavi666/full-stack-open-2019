@@ -4,14 +4,35 @@ const helper = require('./test_helper')
 const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
+const User = require('../models/user')
+
+const sinon = require('sinon');
+const jwt = require('jsonwebtoken')
 
 beforeEach(async () => {
   await Blog.deleteMany({})
+  await User.deleteMany({})
+
+  for (let user of helper.initialUsers) {
+    let userObject = new User(user)
+    await userObject.save()
+  }
+
+  const users = await User.find({ username: helper.initialUsers[0].username })
+  sinon.stub(jwt,'verify').returns({
+    username: users[0].username,
+    id: users[0]._id
+  })
 
   for (let blog of helper.initialBlogs) {
     let blogObject = new Blog(blog)
+    blogObject.user = users[0]
     await blogObject.save()
   }
+})
+
+afterEach(async () => {
+  sinon.restore();
 })
 
 describe('when there is initially some blogs saved', () => {
@@ -35,7 +56,7 @@ describe('when there is initially some blogs saved', () => {
   })
 
   describe('addition of a new blog', () => {
-    test('succeeds with valid data ', async () => {
+    test('succeeds with valid data', async () => {
       const newBlog = {
         title: 'ACB.com',
         author: 'Don Patricio',
@@ -45,10 +66,10 @@ describe('when there is initially some blogs saved', () => {
 
       await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer 123456789`)
         .send(newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
-
 
       const blogsAtEnd = await helper.blogsInDb()
       expect(blogsAtEnd.length).toBe(helper.initialBlogs.length + 1)
@@ -66,6 +87,7 @@ describe('when there is initially some blogs saved', () => {
 
       await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer 123456789`)
         .send(newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
@@ -84,6 +106,7 @@ describe('when there is initially some blogs saved', () => {
 
       await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer 123456789`)
         .send(newBlog)
         .expect(400)
         .expect('Content-Type', /application\/json/)
