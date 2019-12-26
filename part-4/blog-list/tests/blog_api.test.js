@@ -122,6 +122,7 @@ describe('when there is initially some blogs saved', () => {
 
       await api
         .delete(`/api/blogs/${blogToDelete.id}`)
+        .set('Authorization', `Bearer 123456789`)
         .expect(204)
 
       const blogsAtEnd = await helper.blogsInDb()
