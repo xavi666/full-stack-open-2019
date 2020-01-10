@@ -4,6 +4,7 @@ import BlogForm from './components/BlogForm';
 import blogService from './services/blogs';
 import loginService from './services/login';
 import Notification from './components/Notification';
+import Togglable from './components/Togglable';
 import './App.css';
 
 const App = () => {
@@ -142,18 +143,22 @@ const App = () => {
           Logout
         </button>
       </p>
-      <BlogForm
-        addBlog={addBlog}
-        newTitle={newTitle}
-        handleTitleChange={({ target }) => setNewTitle(target.value)}
-        newAuthor={newAuthor}
-        handleAuthorChange={({ target }) => setNewAuthor(target.value)}
-        newUrl={newUrl}
-        handleUrlChange={({ target }) => setNewUrl(target.value)}
-      />
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
-      )}
+      <Togglable buttonLabel='new blog'>
+        <BlogForm
+          addBlog={addBlog}
+          newTitle={newTitle}
+          handleTitleChange={({ target }) => setNewTitle(target.value)}
+          newAuthor={newAuthor}
+          handleAuthorChange={({ target }) => setNewAuthor(target.value)}
+          newUrl={newUrl}
+          handleUrlChange={({ target }) => setNewUrl(target.value)}
+        />
+      </Togglable>
+      <div>
+        {blogs.map(blog =>
+          <Blog key={blog.id} blog={blog} />
+        )}
+      </div>
     </div>
   );
 }
