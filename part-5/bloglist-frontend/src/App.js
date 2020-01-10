@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Blog from './components/Blog';
+import BlogForm from './components/BlogForm';
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -8,6 +9,9 @@ const App = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
+  const [newTitle, setNewTitle] = useState('');
+  const [newAuthor, setNewAuthor] = useState('');
+  const [newUrl, setNewUrl] = useState('');
 
   useEffect(() => {
     blogService
@@ -35,6 +39,7 @@ const App = () => {
         'loggedBlogAppUser', JSON.stringify(user)
       );
 
+      blogService.setToken(user.token)
       setUser(user);
       setUsername('');
       setPassword('');
@@ -48,6 +53,38 @@ const App = () => {
     window.localStorage.removeItem('loggedBlogAppUser');
   }
 
+  const handleTitleChange = (event) => {
+    setNewTitle(event.target.value);
+  };
+
+  const handleAuthorChange = (event) => {
+    setNewAuthor(event.target.value);
+  };
+
+  const handleUrlChange = (event) => {
+    setNewUrl(event.target.value);
+  };
+
+  const addBlog = (event) => {
+    event.preventDefault();
+    const newBlog = {
+      title: newTitle,
+      author: newAuthor,
+      url: newUrl
+    };
+    blogService
+      .create(newBlog)
+      .then(response => {
+        setBlogs(blogs.concat(response));
+        setNewTitle('');
+        setNewAuthor('');
+        setNewUrl('');
+      })
+      .catch(error => {
+        console.log('error while creating blog', error);
+      });
+  };
+
   if (user === null) {
     return (
       <div>
@@ -55,7 +92,7 @@ const App = () => {
         <form onSubmit={handleLogin}>
           <div>
             username
-              <input
+            <input
               type="text"
               value={username}
               name="Username"
@@ -64,7 +101,7 @@ const App = () => {
           </div>
           <div>
             password
-              <input
+            <input
               type="password"
               value={password}
               name="Password"
@@ -86,6 +123,15 @@ const App = () => {
           Logout
         </button>
       </p>
+      <BlogForm
+        addBlog={addBlog}
+        newTitle={newTitle}
+        handleTitleChange={handleTitleChange}
+        newAuthor={newAuthor}
+        handleAuthorChange={handleAuthorChange}
+        newUrl={newUrl}
+        handleUrlChange={handleUrlChange}
+      />
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
