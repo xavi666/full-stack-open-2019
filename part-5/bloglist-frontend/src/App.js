@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Blog from './components/Blog';
 import BlogForm from './components/BlogForm';
-import blogService from './services/blogs'
-import loginService from './services/login'
+import blogService from './services/blogs';
+import loginService from './services/login';
+import Notification from './components/Notification';
+import './App.css';
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -12,6 +14,7 @@ const App = () => {
   const [newTitle, setNewTitle] = useState('');
   const [newAuthor, setNewAuthor] = useState('');
   const [newUrl, setNewUrl] = useState('');
+  const [message, setMessage] = useState({});
 
   useEffect(() => {
     blogService
@@ -43,8 +46,21 @@ const App = () => {
       setUser(user);
       setUsername('');
       setPassword('');
+      setMessage({
+        type: 'success',
+        text: `successfully logged in`
+      });
+      setTimeout(() => {
+        setMessage({});
+      }, 2500);
     } catch (exception) {
-      console.log('error while login', exception);
+      setMessage({
+        type: 'error',
+        text: 'wrong username or password'
+      });
+      setTimeout(() => {
+        setMessage({});
+      }, 5000);
     }
   }
 
@@ -52,18 +68,6 @@ const App = () => {
     setUser(null);
     window.localStorage.removeItem('loggedBlogAppUser');
   }
-
-  const handleTitleChange = (event) => {
-    setNewTitle(event.target.value);
-  };
-
-  const handleAuthorChange = (event) => {
-    setNewAuthor(event.target.value);
-  };
-
-  const handleUrlChange = (event) => {
-    setNewUrl(event.target.value);
-  };
 
   const addBlog = (event) => {
     event.preventDefault();
@@ -79,9 +83,22 @@ const App = () => {
         setNewTitle('');
         setNewAuthor('');
         setNewUrl('');
+        setMessage({
+          type: 'success',
+          text: `a new blog ${response.title} by ${response.author} added`
+        });
+        setTimeout(() => {
+          setMessage({});
+        }, 2500);
       })
       .catch(error => {
-        console.log('error while creating blog', error);
+        setMessage({
+          type: 'error',
+          text: `error while creating blog ${error}`
+        });
+        setTimeout(() => {
+          setMessage({});
+        }, 5000);
       });
   };
 
@@ -89,6 +106,7 @@ const App = () => {
     return (
       <div>
         <h2>Log in to application</h2>
+        <Notification message={message} />
         <form onSubmit={handleLogin}>
           <div>
             username
@@ -117,6 +135,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
+      <Notification message={message} />
       <p>
         {`${user.username} logged in`}
         <button onClick={() => handleLogout()}>
@@ -126,11 +145,11 @@ const App = () => {
       <BlogForm
         addBlog={addBlog}
         newTitle={newTitle}
-        handleTitleChange={handleTitleChange}
+        handleTitleChange={({ target }) => setNewTitle(target.value)}
         newAuthor={newAuthor}
-        handleAuthorChange={handleAuthorChange}
+        handleAuthorChange={({ target }) => setNewAuthor(target.value)}
         newUrl={newUrl}
-        handleUrlChange={handleUrlChange}
+        handleUrlChange={({ target }) => setNewUrl(target.value)}
       />
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
