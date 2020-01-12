@@ -112,6 +112,14 @@ const App = () => {
       })
   };
 
+  const sortByLikes = () => {
+    setBlogs(
+      [].concat(blogs.sort((a, b)=> {
+        return b.likes - a.likes;
+      })
+    ));
+  }
+
   if (user === null) {
     return (
       <div>
@@ -163,6 +171,9 @@ const App = () => {
           handleUrlChange={({ target }) => setNewUrl(target.value)}
         />
       </Togglable>
+      <button onClick={() => sortByLikes()}>
+        Sort by Likes
+      </button>
       <div>
         {blogs.map(blog =>
           <Blog
