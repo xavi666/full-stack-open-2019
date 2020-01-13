@@ -24,10 +24,10 @@ const Blog = ({ blog, likeBlog, removeBlog, showRemoveButton }) => {
 
   return (
     <div style={blogStyle}>
-      <p onClick={() => setExpanded(false)}>{blog.title}</p>
+      <p onClick={() => setExpanded(false)}>{blog.title} {blog.author}</p>
       <p>{blog.url}</p>
       <p>{blog.likes} likes <button onClick={() => likeBlog(blog)}>like</button></p>
-      <p>added by {blog.author}</p>
+      <p>added by {blog.user.username}</p>
       { showRemoveButton && (<button onClick={() => removeBlog(blog)}>remove</button>)}
     </div>
   )
