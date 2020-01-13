@@ -120,6 +120,25 @@ const App = () => {
     ));
   }
 
+  const removeBlog = (blog) => {
+    if(window.confirm(`remove blog ${blog.title} by ${blog.author}`)){
+      blogService
+        .remove(blog.id)
+        .then(response=> {
+          setBlogs(blogs.filter(b => b.id !== blog.id));
+        })
+        .catch(error => {
+          setMessage({
+            type: 'error',
+            text: `error while deleting blog: ${error.response.data.error}`
+          });
+          setTimeout(() => {
+            setMessage({});
+          }, 5000);
+        });
+    }
+  }
+
   if (user === null) {
     return (
       <div>
@@ -180,6 +199,7 @@ const App = () => {
             key={blog.id}
             blog={blog}
             likeBlog={likeBlog}
+            removeBlog={removeBlog}
           />
         )}
       </div>
