@@ -31,7 +31,6 @@ test('renders content', () => {
   expect(likesContainer).toHaveTextContent(likes)
 })
 
-
 test('clicking twice the button calls event handler twice', () => {
   const blog = {
     title: 'This is the title',

@@ -15,15 +15,18 @@ const Blog = ({ blog, likeBlog, removeBlog, showRemoveButton }) => {
   if(!expanded) {
     return (
       <div
+        className='summary'
         onClick={() => setExpanded(true)}
         style={blogStyle}>
-        {blog.title}
+        {blog.title} {blog.author}
       </div>
     )
   }
 
   return (
-    <div style={blogStyle}>
+    <div
+      className='detail'
+      style={blogStyle}>
       <p onClick={() => setExpanded(false)}>{blog.title} {blog.author}</p>
       <p>{blog.url}</p>
       <p>{blog.likes} likes <button onClick={() => likeBlog(blog)}>like</button></p>
