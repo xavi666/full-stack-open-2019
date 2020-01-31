@@ -117,7 +117,7 @@ const App = () => {
       [].concat(blogs.sort((a, b)=> {
         return b.likes - a.likes;
       })
-    ));
+      ));
   }
 
   const removeBlog = (blog) => {
