@@ -13,9 +13,9 @@ const App = () => {
   const username = useField('text', 'Username')
   const password = useField('password', 'Password')
   const [user, setUser] = useState(null);
-  const [newTitle, setNewTitle] = useState('');
-  const [newAuthor, setNewAuthor] = useState('');
-  const [newUrl, setNewUrl] = useState('');
+  const newTitle = useField('text', 'Title')
+  const newAuthor = useField('text', 'Author')
+  const newUrl = useField('text', 'Url')
   const [message, setMessage] = useState({});
 
   useEffect(() => {
@@ -73,17 +73,17 @@ const App = () => {
   const addBlog = (event) => {
     event.preventDefault();
     const newBlog = {
-      title: newTitle,
-      author: newAuthor,
-      url: newUrl
+      title: newTitle.value,
+      author: newAuthor.value,
+      url: newUrl.value
     };
     blogService
       .create(newBlog)
       .then(response => {
         setBlogs(blogs.concat(response));
-        setNewTitle('');
-        setNewAuthor('');
-        setNewUrl('');
+        newTitle.reset();
+        newAuthor.reset();
+        newUrl.reset();
         setMessage({
           type: 'success',
           text: `a new blog ${response.title} by ${response.author} added`
@@ -173,11 +173,8 @@ const App = () => {
         <BlogForm
           addBlog={addBlog}
           newTitle={newTitle}
-          handleTitleChange={({ target }) => setNewTitle(target.value)}
           newAuthor={newAuthor}
-          handleAuthorChange={({ target }) => setNewAuthor(target.value)}
           newUrl={newUrl}
-          handleUrlChange={({ target }) => setNewUrl(target.value)}
         />
       </Togglable>
       <button onClick={() => sortByLikes()}>

@@ -7,24 +7,15 @@ const BlogForm = (props) => {
       <h2>create new</h2>
       <div>
         title:
-        <input
-          value={props.newTitle}
-          onChange={ props.handleTitleChange }
-        />
+        <input {...props.newTitle} />
       </div>
       <div>
         author:
-        <input
-          value={props.newAuthor}
-          onChange={ props.handleAuthorChange }
-        />
+        <input {...props.newAuthor} />
       </div>
       <div>
         url:
-        <input
-          value={props.newUrl}
-          onChange={ props.handleUrlChange }
-        />
+        <input {...props.newUrl} />
       </div>
       <div>
         <button type="submit">create</button>
@@ -35,12 +26,9 @@ const BlogForm = (props) => {
 
 BlogForm.propTypes = {
   addBlog: PropTypes.func.isRequired,
-  handleTitleChange: PropTypes.func.isRequired,
-  newTitle: PropTypes.string.isRequired,
-  handleAuthorChange: PropTypes.func.isRequired,
-  newAuthor: PropTypes.string.isRequired,
-  handleUrlChange: PropTypes.func.isRequired,
-  newUrl: PropTypes.string.isRequired,
+  newTitle: PropTypes.object.isRequired,
+  newAuthor: PropTypes.object.isRequired,
+  newUrl: PropTypes.object.isRequired,
 }
 
 export default BlogForm;
