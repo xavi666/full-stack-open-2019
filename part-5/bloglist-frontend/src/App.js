@@ -147,11 +147,11 @@ const App = () => {
         <form onSubmit={handleLogin}>
           <div>
             username
-            <input {...username} />
+            <input {...username.inputProps()} />
           </div>
           <div>
             password
-            <input {...password} />
+            <input {...password.inputProps()} />
           </div>
           <button type="submit">login</button>
         </form>
@@ -172,9 +172,9 @@ const App = () => {
       <Togglable buttonLabel='new blog'>
         <BlogForm
           addBlog={addBlog}
-          newTitle={newTitle}
-          newAuthor={newAuthor}
-          newUrl={newUrl}
+          newTitle={newTitle.inputProps()}
+          newAuthor={newAuthor.inputProps()}
+          newUrl={newUrl.inputProps()}
         />
       </Togglable>
       <button onClick={() => sortByLikes()}>

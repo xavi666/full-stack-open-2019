@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import axios from 'axios'
 
 export const useField = (type, name) => {
   const [value, setValue] = useState('')
@@ -11,11 +12,18 @@ export const useField = (type, name) => {
     setValue('')
   }
 
+  const inputProps = () => {
+    return {
+      type,
+      value,
+      onChange,
+      name
+    }
+  }
+
   return {
-    type,
-    name,
     value,
-    onChange,
-    reset
+    inputProps,
+    reset,
   }
 }
