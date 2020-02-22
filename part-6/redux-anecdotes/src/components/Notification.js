@@ -7,7 +7,7 @@ const Notification = (props) => {
     borderWidth: 1
   }
 
-  const content = props.store.getState().notification;
+  const content = props.store.getState().notification
 
   if (content === '') return '';
 
