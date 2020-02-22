@@ -1,5 +1,3 @@
-const getId = () => (100000 * Math.random()).toFixed(0)
-
 const reducer = (state = [], action) => {
   console.log('state now: ', state)
   console.log('action', action)
@@ -31,14 +29,10 @@ export const initializeAnecdotes = (anecdotes) => {
   }
 }
 
-export const addAnecdote = (content) => {
+export const addAnecdote = (data) => {
   return {
     type: 'ADD_ANECDOTE',
-    data: {
-      content,
-      votes: 0,
-      id: getId()
-    }
+    data
   }
 }
 
