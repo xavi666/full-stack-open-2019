@@ -35,7 +35,6 @@ const anecdotesToShow = ({ anecdotes, filter }) => {
   );
 } 
 
-
 const mapStateToProps = (state) => {
   return {
     anecdotesToShow: anecdotesToShow(state),
