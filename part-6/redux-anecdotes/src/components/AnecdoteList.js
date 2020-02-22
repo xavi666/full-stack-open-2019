@@ -3,7 +3,10 @@ import { vote } from '../reducers/anecdoteReducer'
 import { showNotification, hideNotification } from '../reducers/notificationReducer'
 
 const AnecdoteList = (props) => {
-  const anecdotes = props.store.getState().anecdotes
+  const filter = props.store.getState().filter
+  const anecdotes = props.store.getState().anecdotes.filter(
+    anecdote => anecdote.content.toLowerCase().includes(filter.toLowerCase())
+  ); 
 
   const voteAnecdote = (anecdote) => {
     props.store.dispatch(vote(anecdote.id));
