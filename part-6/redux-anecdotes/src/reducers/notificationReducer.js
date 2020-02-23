@@ -14,21 +14,30 @@ const reducer = (state = initialState, action) => {
   }
 }
 
-export const showNotification = (content) => {
-  return {
-    type: 'SHOW_NOTIFICATION',
-    data: {
-      content
-    }
+export const showNotification = (content, seconds) => {
+  return async dispatch => {
+    dispatch({
+      type: 'SHOW_NOTIFICATION',
+      data: {
+        content
+      },
+    })
+    setTimeout(() => {
+      dispatch({
+        type: 'HIDE_NOTIFICATION',
+      });
+    }, seconds * 1000)
   }
 }
 
 export const hideNotification = (content) => {
-  return {
-    type: 'HIDE_NOTIFICATION',
-    data: {
-      content
-    }
+  return async dispatch => {
+    dispatch({
+      type: 'HIDE_NOTIFICATION',
+      data: {
+        content
+      },
+    })
   }
 }
 
