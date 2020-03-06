@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 import {
   BrowserRouter as Router,
-  Route, Link
+  Route, Link, withRouter
 } from 'react-router-dom'
 
 const AnecdoteList = ({ anecdotes }) => (
@@ -54,7 +54,6 @@ const CreateNew = (props) => {
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
 
-
   const handleSubmit = (e) => {
     e.preventDefault()
     props.addNew({
@@ -63,6 +62,7 @@ const CreateNew = (props) => {
       info,
       votes: 0
     })
+    props.history.push('/')
   }
 
   return (
@@ -111,6 +111,10 @@ const App = () => {
   const addNew = (anecdote) => {
     anecdote.id = (Math.random() * 10000).toFixed(0)
     setAnecdotes(anecdotes.concat(anecdote))
+    setNotification(`a new anecdote ${anecdote.content} created!`)
+    setTimeout(() => {
+      setNotification('')
+    }, 10000);
   }
 
   const anecdoteById = (id) =>
@@ -129,6 +133,15 @@ const App = () => {
 
   const padding = { padding: 5 }
 
+  const notificationStyle = {
+    border: 'solid',
+    padding: 10,
+    borderWidth: 2,
+    borderColor: 'red',
+  }
+
+  const CreateNewWithRouter = withRouter(({...props}) => <CreateNew addNew={addNew} {...props} />);
+
   return (
     <div>
       <h1>Software anecdotes</h1>
@@ -139,11 +152,16 @@ const App = () => {
             <Link style={padding} to="/create-new">create new</Link>
             <Link style={padding} to="/about">about</Link>
           </div>
+          {
+            notification ?
+            <div style={notificationStyle}>{notification}</div>
+            : ''
+          }
           <Route exact path="/" render={() => <AnecdoteList anecdotes={anecdotes} />} />
           <Route exact path="/anecdotes/:id" render={({ match }) =>
             <Anecdote anecdote={anecdoteById(match.params.id)} />
           } />
-          <Route path="/create-new" render={() => <CreateNew addNew={addNew} />} />
+          <Route path="/create-new" render={(addNew) => <CreateNewWithRouter /> } />
           <Route path="/about" render={() => <About />} />
         </div>
       </Router>
